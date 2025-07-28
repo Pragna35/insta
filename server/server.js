@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./utils/db.js";
 import userRoutes from "./routes/user.route.js";
+import postRoutes from "./routes/post.router.js";
+import messageRoutes from "./routes/message.route.js";
 
 dotenv.config({});
 
@@ -28,8 +30,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 //api routes
 app.use("api/v1/user", userRoutes)
+app.use("api/v1/post", postRoutes)
+app.use("api/v1/message", messageRoutes)
 
 app.listen(PORT, () => {
   console.log(`server running on ${PORT}`);
