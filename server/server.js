@@ -11,15 +11,14 @@ dotenv.config({});
 
 const app = express();
 
-
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (_, res) => {
-  return res.status(200).json({
-    message: "I am from backend",
-    success: true,
-  });
-});
+// app.get("/", (_, res) => {
+//   return res.status(200).json({
+//     message: "I am from backend",
+//     success: true,
+//   });
+// });
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -32,9 +31,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //api routes
-app.use("api/v1/user", userRoutes)
-app.use("api/v1/post", postRoutes)
-app.use("api/v1/message", messageRoutes)
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/message", messageRoutes);
 
 app.listen(PORT, () => {
   console.log(`server running on ${PORT}`);

@@ -7,6 +7,7 @@ import Post from "../models/post.model.js";
 
 //register
 export const register = async (req, res) => {
+ console.log("Register route hit"); // 👈 test log
   try {
     const { username, email, password } = req.body;
 
