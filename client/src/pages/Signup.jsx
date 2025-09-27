@@ -1,9 +1,10 @@
 import { Label } from "@radix-ui/react-label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,14 +12,15 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const inputHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const signupHandler = async (e) => {
     e.preventDefault();
-    console.log(formData);
-
+    // console.log(formData);
+    setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:8000/api/v1/user/register",
@@ -35,7 +37,14 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log(error);
-      // toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+      });
     }
   };
   return (
@@ -82,10 +91,13 @@ const SignUp = () => {
               onChange={inputHandler}
               className="focus-visible:ring-transparent my-2"
             ></Input>
+          
+          </div>
             <Button type="submit" className="w-full mt-5 py-2">
               Signup
             </Button>
-          </div>
+            <span className="text-center">Already have an account? <Link to="/login" className="text-blue-600">Login</Link></span>
+
         </form>
       </div>
     </>

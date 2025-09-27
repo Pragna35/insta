@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import getDataUri from "../utils/dataUri.js";
 import cloudinary from "../utils/cloudinary.js";
 import Post from "../models/post.model.js";
+import { executionAsyncResource } from "async_hooks";
 
 //register
 export const register = async (req, res) => {
- console.log("Register route hit"); // 👈 test log
   try {
     const { username, email, password } = req.body;
 
@@ -19,10 +19,18 @@ export const register = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(401).json({
+      return res.status(400).json({
         message: "Email alreay exist.",
         success: false,
       });
+    }
+
+    const existingUsername = await User.findOne({username});
+    if(existingUsername){
+      return res.status(400).json({
+        message:"Username already exist. try another name",
+        success:false
+      })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
