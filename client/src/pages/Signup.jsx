@@ -4,9 +4,11 @@ import { Button } from "../components/ui/button";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -33,6 +35,7 @@ const SignUp = () => {
         }
       );
       if (response.data.success) {
+        navigate("/login");
         toast.success(response.data.message);
       }
     } catch (error) {
@@ -91,13 +94,23 @@ const SignUp = () => {
               onChange={inputHandler}
               className="focus-visible:ring-transparent my-2"
             ></Input>
-          
           </div>
+          {loading ? (
+            <Button>
+              <Loader2 className="mr-2 w-4 h-4 animate-spin" /> please wait...
+            </Button>
+          ) : (
             <Button type="submit" className="w-full mt-5 py-2">
               Signup
             </Button>
-            <span className="text-center">Already have an account? <Link to="/login" className="text-blue-600">Login</Link></span>
+          )}
 
+          <span className="text-center">
+            Already have an account?
+            <Link to="/login" className="text-blue-600">
+              Login
+            </Link>
+          </span>
         </form>
       </div>
     </>

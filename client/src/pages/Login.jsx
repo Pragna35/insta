@@ -5,9 +5,10 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -33,8 +34,8 @@ const Login = () => {
         }
       );
       if (response.data.success) {
+         navigate("/");
         toast.success(response.data.message);
-        navigate("/")
       }
     } catch (error) {
       console.log(error);
@@ -82,12 +83,23 @@ const Login = () => {
               onChange={inputHandler}
               className="focus-visible:ring-transparent my-2"
             ></Input>
-           
           </div>
-           <Button type="submit" className="w-full mt-5 py-2">
+          {loading ? (
+            <Button>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> please wait...
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full mt-5 py-2">
               Login
             </Button>
-               <span className="text-center">Don't have an account? <Link to="/signup" className="text-blue-600">Signup</Link></span>
+          )}
+
+          <span className="text-center">
+            Don't have an account?
+            <Link to="/signup" className="text-blue-600">
+              Signup
+            </Link>
+          </span>
         </form>
       </div>
     </>

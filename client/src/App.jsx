@@ -6,9 +6,9 @@ import { Button } from "./components/ui/button";
 import SignUp from "./pages/Signup";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
-import Profile from "./components/ui/Profile";
+import Profile from "./components/Profile";
 import MainLayout from "./pages/MainLayout";
-import Home from "./components/ui/Home";
+import Home from "./components/Home";
 
 const browserRouter = createBrowserRouter([
   {

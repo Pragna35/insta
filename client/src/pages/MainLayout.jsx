@@ -1,3 +1,5 @@
+import Sidebar from "@/components/Sidebar";
+
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
@@ -6,8 +8,8 @@ const MainLayout = () => {
     //     MAin layout page
     // </div>
     <>
-      Sidebar
-      <div>
+      <Sidebar />
+      <div className="">
         <Outlet></Outlet>
       </div>
     </>
