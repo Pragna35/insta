@@ -25,12 +25,12 @@ export const register = async (req, res) => {
       });
     }
 
-    const existingUsername = await User.findOne({username});
-    if(existingUsername){
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
       return res.status(400).json({
-        message:"Username already exist. try another name",
-        success:false
-      })
+        message: "Username already exist. try another name",
+        success: false,
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -115,10 +115,17 @@ export const login = async (req, res) => {
 //logout
 export const logout = async (_, res) => {
   try {
-    return res.cookie("logout", "", { maxAge: 0 }).json({
-      message: "Logged out successfully",
-      success: true,
-    });
+    return res
+      .cookie("token", "", {
+        maxAge: 0,
+         httpOnly: true,
+        sameSite: "strict",
+        expires: new Date(0), // This effectively deletes the cookie
+      })
+      .json({
+        message: "Logged out successfully",
+        success: true,
+      });
   } catch (error) {
     console.log(error);
   }
