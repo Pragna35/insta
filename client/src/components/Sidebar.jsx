@@ -83,7 +83,7 @@ const Sidebar = () => {
   return (
     <div className="fixed top-0 left-0 z-10 w-[16%] h-screen border-r border-gray-300 px-4">
       <div className="flex flex-col">
-        <h1>LOGO</h1>
+        <h1 className="text-center my-8 mx-auto text-xl font-bold">LOGO</h1>
         {sidebarItems.map((item, ind) => {
           return (
             <div
