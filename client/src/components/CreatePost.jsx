@@ -1,20 +1,33 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
-import { data } from "react-router-dom";
 import { readFileAsDataURL } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "@/redux/postSlice";
 
 const CreatePost = ({ open, setOpen }) => {
+  const dispatch = useDispatch();
   const imgRef = useRef();
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  const { posts } = useSelector((store) => store.post);
+// runs every time the open state changes and clear the data when we close the modal
+  useEffect(() => {
+  if (!open) {
+    setCaption("");
+    setFile("");
+    setPreview("");
+    setLoading(false);
+  }
+}, [open]);
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files?.[0];
@@ -48,7 +61,12 @@ const CreatePost = ({ open, setOpen }) => {
         }
       );
       if (res.data.success) {
+        dispatch(setPosts([res.data.post, ...posts,]));
         toast.success(res.data.message);
+        setOpen(false)
+        setFile("")
+        setCaption("")
+        setPreview("")
       }
     } catch (error) {
       toast.error(error.response.data.message);
@@ -64,11 +82,11 @@ const CreatePost = ({ open, setOpen }) => {
         </DialogHeader>
         <div className="flex items-center gap-3">
           <Avatar className="border">
-            <AvatarImage src="" alt="img"></AvatarImage>
+            <AvatarImage src={user?.profilePicture} alt="img"></AvatarImage>
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-semibold text-xs">Username</h1>
+            <h1 className="font-semibold text-xs">{user.username}</h1>
             <span className="text-gray-600 text-xs">Bio here...</span>
           </div>
         </div>

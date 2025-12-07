@@ -60,11 +60,11 @@ export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username, profilePicture" })
+      .populate({ path: "author", select: "username profilePicture" })
       .populate({
         path: "comments",
         sort: { createdAt: -1 },
-        populate: { path: "author", select: "username, profilePicture" },
+        populate: { path: "author", select: "username profilePicture" },
       });
 
     return res.status(200).json({
@@ -85,10 +85,10 @@ export const getUserPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .populate({
         path: "author",
-        select: "username, profilePicture",
+        select: "username profilePicture",
         populate: {
           path: "comments",
-          select: "userName, profilePicture",
+          select: "username profilePicture",
         },
       });
 
@@ -152,20 +152,22 @@ export const addComment = async (req, res) => {
   try {
     const commentedUserId = req.id;
     const postId = req.params.id;
+    const { text } = req.body;
 
-    const { commentedText } = req.body;
     const post = await Post.findById(postId);
-    if (!commentedText)
+    if (!text)
       return res
-        .staus(400)
+        .status(400)
         .json({ message: "comment is required.", success: false });
     const comment = await Comment.create({
-      commentedText,
+      text,
       author: commentedUserId,
       post: postId,
-    }).populate({
+    })
+    //know this or revise
+    await comment.populate({
       path: "author",
-      select: "username, profilePicture",
+      select: "username profilePicture",
     });
 
     post.comments.push(comment._id);
