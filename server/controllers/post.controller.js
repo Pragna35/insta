@@ -2,6 +2,7 @@ import sharp from "sharp";
 import cloudinary from "../utils/cloudinary.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
+import Comment from "../models/comment.model.js";
 
 //adding new post
 export const addPost = async (req, res) => {
@@ -16,7 +17,7 @@ export const addPost = async (req, res) => {
       });
 
     // post image upload
-
+ // Optimizing image using sharp
     const optimizedImageBuffer = await sharp(image.buffer)
       .resize({ width: 800, height: 800, fit: "inside" })
       .toFormat("jpeg", { quality: 80 })
@@ -31,7 +32,7 @@ export const addPost = async (req, res) => {
     const post = await Post.create({
       caption,
       image: cloudResponse.secure_url,
-      user: userId,
+      author: userId,
     });
 
     const user = await User.findById(userId);
@@ -41,9 +42,9 @@ export const addPost = async (req, res) => {
       await user.save();
     }
 
-    awaitpost.populate({ path: "author", select: "-password" });
+    await post.populate({ path: "author", select: "-password" });
 
-    return res.ststus(200).json({
+    return res.status(200).json({
       message: "new Post added successfully.",
       post,
       success: true,

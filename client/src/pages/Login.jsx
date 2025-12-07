@@ -6,9 +6,12 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,6 +37,7 @@ const Login = () => {
         }
       );
       if (response.data.success) {
+        dispatch(setAuthUser(response.data.user))
          navigate("/");
         toast.success(response.data.message);
       }

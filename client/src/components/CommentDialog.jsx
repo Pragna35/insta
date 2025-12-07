@@ -3,8 +3,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Link } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 const CommentDialog = ({ dialogOpen, setDialogOpen }) => {
+  const [text, setText] = useState("");
+console.log(text,"comment text")
+  const changeEventHandler = (e) => {
+    const inputText = e.target.value;
+    if (inputText.trim()) {
+      setText(inputText);
+    } else {
+      setText("");
+    }
+  };
+
+  const sendCommentHandler = async () => {
+    alert("comment send")
+  }
   return (
     <Dialog open={dialogOpen}>
       <DialogContent
@@ -55,10 +70,10 @@ const CommentDialog = ({ dialogOpen, setDialogOpen }) => {
                   type="text"
                   placeholder="Add a comment..."
                   className="w-full outline-none border border-gray-300  p-2 rounded"
+                  value={text}
+                  onChange={changeEventHandler}
                 />
-                <Button variant="outline">
-                    Send
-                </Button>
+                <Button variant="outline" disabled={!text.trim()} onClick={sendCommentHandler}>Send</Button>
               </div>
             </div>
           </div>

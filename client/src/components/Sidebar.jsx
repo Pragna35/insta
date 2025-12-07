@@ -1,3 +1,4 @@
+import { setAuthUser } from "@/redux/authSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import axios from "axios";
 import {
@@ -11,75 +12,87 @@ import {
   SquarePlus,
   TrendingUp,
 } from "lucide-react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-const sidebarItems = [
-  {
-    icon: <Home />,
-    label: "Home",
-  },
-  {
-    icon: <Search />,
-    label: "Search",
-  },
-  {
-    icon: <TrendingUp />,
-    label: "Explore",
-  },
-  {
-    icon: <Heart />,
-    label: "Notifications",
-  },
-  {
-    icon: <MessageCircle />,
-    label: "Messages",
-  },
-  {
-    icon: <Film />,
-    label: "Reels",
-  },
-  {
-    icon: <SquarePlus />,
-    label: "Create",
-  },
-  {
-    icon: (
-      <Avatar>
-        <AvatarImage
-          src="https://github.com/shadcn.png"
-          className="h-[30px] w-[30px] rounded-full"
-        />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    ),
-    label: "Profile",
-  },
-  {
-    icon: <LogOut />,
-    label: "Logout",
-  },
-];
+import CreatePost from "./CreatePost";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
   const LogoutHandler = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
         withCredentials: true,
       });
       if (res.data.success) {
+        dispatch(setAuthUser(null));
         navigate("/login");
         toast.success(res.data.message);
       }
     } catch (error) {
-        toast.error(error.response?.data.message);
+      toast.error(error.response?.data.message);
     }
   };
 
   const sidebarHandler = (labelType) => {
-    if (labelType === "Logout") LogoutHandler();
+    if (labelType === "Logout") {
+      LogoutHandler();
+    } else if (labelType === "Create") {
+       setOpen(true);
+    }
   };
+  const sidebarItems = [
+    {
+      icon: <Home />,
+      label: "Home",
+    },
+    {
+      icon: <Search />,
+      label: "Search",
+    },
+    {
+      icon: <TrendingUp />,
+      label: "Explore",
+    },
+    {
+      icon: <Heart />,
+      label: "Notifications",
+    },
+    {
+      icon: <MessageCircle />,
+      label: "Messages",
+    },
+    {
+      icon: <Film />,
+      label: "Reels",
+    },
+    {
+      icon: <SquarePlus />,
+      label: "Create",
+    },
+    {
+      icon: (
+        <Avatar>
+          <AvatarImage
+            src="https://github.com/shadcn.png"
+            // src={user?.profilePicture}
+            className="h-[30px] w-[30px] rounded-full"
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      ),
+      // label: "Profile",
+      label: user?.username,
+    },
+    {
+      icon: <LogOut />,
+      label: "Logout",
+    },
+  ];
   return (
     <div className="fixed top-0 left-0 z-10 w-[16%] h-screen border-r border-gray-300 px-4">
       <div className="flex flex-col">
@@ -97,6 +110,7 @@ const Sidebar = () => {
           );
         })}
       </div>
+      <CreatePost open={open} setOpen={setOpen}/>
     </div>
   );
 };

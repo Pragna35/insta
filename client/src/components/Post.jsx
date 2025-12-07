@@ -4,11 +4,14 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { FaRegHeart } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Post = () => {
   const [text, setText] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [posts, setPosts] = useState([]);
+  console.log(posts, "posts data");
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -17,8 +20,20 @@ const Post = () => {
     // } else {
     //   setText("");
     // }
-      setText(inputText.trim());
+    setText(inputText.trim());
   };
+  const fetchPosts = async () => {
+    const res = await axios.get("http://localhost:8000/api/v1/post/allposts", {
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      withCredentials: true,
+    });
+    setPosts(res.data.posts);
+  };
+  useEffect(() => {
+    fetchPosts();
+  }, []);
   return (
     <div className="my-8 w-full max-w-sm mx-auto">
       <div className="flex items-center justify-between">
@@ -49,38 +64,58 @@ const Post = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <img
-        className="rounded-md my-2 w-full aspect-square object-cover"
-        src="https://images.unsplash.com/photo-1761086555468-10a097b6ad6b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
-        alt="post-img"
-      />
-      <div className="flex justify-between items-center my-2">
-        <div className="flex items-center gap-3">
-          <FaRegHeart size={"22px"} className="cursor-pointer" />
-          <MessageCircle onClick={() => {
-            console.log("dialog opened");
-             setDialogOpen(true)}} className="cursor-pointer hover:text-gray-600" />
-          <Send className="cursor-pointer hover:text-gray-600" />
-        </div>
-        <Bookmark className="cursor-pointer hover:text-gray-600" />
-      </div>
-      <span className="font-medium block mb-2 text-sm">30 likes</span>
-      <p>
-        <span className="font-medium mr-2">username</span>
-        caption
-      </p>
-      <span onClick={() => setDialogOpen(true)} className="cursor-pointer text-sm text-gray-400">view all 3 comments</span>
-      <CommentDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}/>
-      <div className="flex items-center justify-between">
-        <input
-          type="text"
-          value={text}
-          onChange={changeEventHandler}
-          placeholder="Add a comment..."
-          className="outline-none text-sm w-full"
-        />
-       {text && ( <span className="text-[#3BADF8]">post</span>)}
-      </div>
+      {posts &&
+        posts.map((post, ind) => {
+          return (
+            <>
+              <img
+                className="rounded-md my-2 w-full aspect-square object-cover"
+                // src="https://images.unsplash.com/photo-1761086555468-10a097b6ad6b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
+                src={post.image}
+                alt="post-img"
+              />
+              <div className="flex justify-between items-center my-2">
+                <div className="flex items-center gap-3">
+                  <FaRegHeart size={"22px"} className="cursor-pointer" />
+                  <MessageCircle
+                    onClick={() => {
+                      console.log("dialog opened");
+                      setDialogOpen(true);
+                    }}
+                    className="cursor-pointer hover:text-gray-600"
+                  />
+                  <Send className="cursor-pointer hover:text-gray-600" />
+                </div>
+                <Bookmark className="cursor-pointer hover:text-gray-600" />
+              </div>
+              <span className="font-medium block mb-2 text-sm">30 likes</span>
+              <p>
+                <span className="font-medium mr-2">username</span>
+                caption
+              </p>
+              <span
+                onClick={() => setDialogOpen(true)}
+                className="cursor-pointer text-sm text-gray-400"
+              >
+                view all 3 comments
+              </span>
+              <CommentDialog
+                dialogOpen={dialogOpen}
+                setDialogOpen={setDialogOpen}
+              />
+              <div className="flex items-center justify-between">
+                <input
+                  type="text"
+                  value={text}
+                  onChange={changeEventHandler}
+                  placeholder="Add a comment..."
+                  className="outline-none text-sm w-full"
+                />
+                {text && <span className="text-[#3BADF8]">post</span>}
+              </div>
+            </>
+          );
+        })}
     </div>
   );
 };
