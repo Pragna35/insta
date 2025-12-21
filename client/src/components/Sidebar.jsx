@@ -42,7 +42,9 @@ const Sidebar = () => {
     if (labelType === "Logout") {
       LogoutHandler();
     } else if (labelType === "Create") {
-       setOpen(true);
+      setOpen(true);
+    } else if (labelType === "Profile") {
+      navigate(`profile/${user?._id}`);
     }
   };
   const sidebarItems = [
@@ -85,8 +87,8 @@ const Sidebar = () => {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       ),
-      // label: "Profile",
-      label: user?.username,
+      label: "Profile",
+      // label: user?.username,
     },
     {
       icon: <LogOut />,
@@ -110,7 +112,7 @@ const Sidebar = () => {
           );
         })}
       </div>
-      <CreatePost open={open} setOpen={setOpen}/>
+      <CreatePost open={open} setOpen={setOpen} />
     </div>
   );
 };

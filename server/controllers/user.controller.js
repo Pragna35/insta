@@ -118,7 +118,7 @@ export const logout = async (_, res) => {
     return res
       .cookie("token", "", {
         maxAge: 0,
-         httpOnly: true,
+        httpOnly: true,
         sameSite: "strict",
         expires: new Date(0), // This effectively deletes the cookie
       })
@@ -135,9 +135,8 @@ export const logout = async (_, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-
     //we are not sending password while getting user profiel
-    let user = await User.findOne(userId).select("-password");
+    let user = await User.findById(userId).select("-password");
 
     return res.status(200).json({
       user,
@@ -186,9 +185,9 @@ export const editProfile = async (req, res) => {
 
 export const getSuggestedUsers = async (req, res) => {
   try {
-    const suggestedUsers = await User.find({ _id: { $ne: req._id } }).select(
-      "-password"
-    );
+    const suggestedUsers = await User.find({
+      _id: { $ne: req.id },
+    }).select("-password");
     if (!suggestedUsers) {
       return res.status(400).json({
         message: "currently do not have any users.",
