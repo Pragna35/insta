@@ -136,7 +136,15 @@ export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
     //we are not sending password while getting user profiel
-    let user = await User.findById(userId).select("-password");
+    let user = await User.findById(userId)
+      .select("-password")
+      .populate({
+        path: "posts",
+        options: {
+          sort: { createdAt: -1 },
+        },
+      })
+      .populate("bookMarks");
 
     return res.status(200).json({
       user,

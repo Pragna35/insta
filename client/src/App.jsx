@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Profile from "./components/Profile";
 import MainLayout from "./pages/MainLayout";
 import Home from "./components/Home";
+import EditProfile from "./components/EditProfile";
 
 const browserRouter = createBrowserRouter([
   {
@@ -19,9 +20,13 @@ const browserRouter = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-         {
+      {
         path: "/profile/:id",
         element: <Profile />,
+      },
+      {
+        path: "/profile/edit",
+        element: <EditProfile />,
       },
     ],
   },

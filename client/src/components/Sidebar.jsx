@@ -45,6 +45,8 @@ const Sidebar = () => {
       setOpen(true);
     } else if (labelType === "Profile") {
       navigate(`profile/${user?._id}`);
+    } else if (labelType === "Home") {
+      navigate("/");
     }
   };
   const sidebarItems = [
@@ -80,7 +82,7 @@ const Sidebar = () => {
       icon: (
         <Avatar>
           <AvatarImage
-            src="https://github.com/shadcn.png"
+            src={user?.profilePicture}
             // src={user?.profilePicture}
             className="h-[30px] w-[30px] rounded-full"
           />
