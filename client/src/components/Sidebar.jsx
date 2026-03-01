@@ -47,6 +47,8 @@ const Sidebar = () => {
       navigate(`profile/${user?._id}`);
     } else if (labelType === "Home") {
       navigate("/");
+    }else if (labelType === "Messages") {
+      navigate("/chat");
     }
   };
   const sidebarItems = [
